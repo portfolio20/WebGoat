@@ -11,14 +11,14 @@ pipeline {
         DEPLOY_GROUP = "webgoat-deployment-group"
         REGION = "ap-northeast-2"
         BUNDLE = "webgoat-deploy-bundle.zip"
-        ECR_REPO        // ECR에 푸시할 이미지 경로
-				IMAGE_TAG       // 태그명 (latest)
-				JAVA_HOME       // JDK 경로
-				S3_BUCKET       // CodeDeploy용 번들을 저장할 S3 버킷
-				DEPLOY_APP      // CodeDeploy 애플리케이션 이름
-				DEPLOY_GROUP    // CodeDeploy 배포 그룹 이름
-				REGION          // AWS 리전
-				BUNDLE          // 생성할 배포 번들 zip 파일명
+    // ECR_REPO        // ECR에 푸시할 이미지 경로
+	//			IMAGE_TAG       // 태그명 (latest)
+	//			JAVA_HOME       // JDK 경로
+	//			S3_BUCKET       // CodeDeploy용 번들을 저장할 S3 버킷
+	//			DEPLOY_APP      // CodeDeploy 애플리케이션 이름
+	//			DEPLOY_GROUP    // CodeDeploy 배포 그룹 이름
+	//			REGION          // AWS 리전
+	//			BUNDLE          // 생성할 배포 번들 zip 파일명
     }
 
     stages {
