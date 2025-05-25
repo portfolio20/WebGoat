@@ -7,8 +7,8 @@ pipeline {
         JAVA_HOME = "/usr/lib/jvm/java-17-amazon-corretto.x86_64"
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
         S3_BUCKET = "webgoat-codedeploy-bucket"
-        DEPLOY_APP = "webgoat-app"
-        DEPLOY_GROUP = "webgoat-deployment-group"
+        DEPLOY_APP = "jenkins-app"
+        DEPLOY_GROUP = "jenkins-deploy-group"
         REGION = "ap-northeast-2"
         BUNDLE = "webgoat-deploy-bundle.zip"
     }
