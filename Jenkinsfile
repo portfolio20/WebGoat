@@ -109,18 +109,21 @@ Resources:
             }
         }
 
-        stage('🚀 Deploy via CodeDeploy') {
-            steps {
-                sh '''
-                aws s3 cp $BUNDLE s3://$S3_BUCKET/$BUNDLE --region $REGION
+       stage('🚀 Deploy via CodeDeploy') {
+        steps {
+            script {
+                withAWS(credentials: 'aws-credentials', region: "${REGION}") {
+                    sh '''
+                    aws s3 cp $BUNDLE s3://$S3_BUCKET/$BUNDLE --region $REGION
 
-                aws deploy create-deployment \
-                  --application-name $DEPLOY_APP \
-                  --deployment-group-name $DEPLOY_GROUP \
-                  --deployment-config-name CodeDeployDefault.ECSAllAtOnce \
-                  --s3-location bucket=$S3_BUCKET,bundleType=zip,key=$BUNDLE \
-                  --region $REGION
-                '''
+                    aws deploy create-deployment \
+                      --application-name $DEPLOY_APP \
+                      --deployment-group-name $DEPLOY_GROUP \
+                      --deployment-config-name CodeDeployDefault.ECSAllAtOnce \
+                      --s3-location bucket=$S3_BUCKET,bundleType=zip,key=$BUNDLE \
+                      --region $REGION
+                    '''
+                }
             }
         }
     }
