@@ -79,11 +79,12 @@ pipeline {
             }
         }
 
-        stage('📄 Generate appspec.yaml') {
-            steps {
-                script {
+      stage('📄 Generate appspec.yaml') {
+        steps {
+            script {
+                withAWS(credentials: 'aws-credentials', region: "${REGION}") {
                     def taskDefArn = sh(
-                        script: "aws ecs register-task-definition --cli-input-json file://taskdef.json --query 'taskDefinition.taskDefinitionArn' --region $REGION --output text",
+                        script: "aws ecs register-task-definition --cli-input-json file://taskdef.json --query 'taskDefinition.taskDefinitionArn' --output text",
                         returnStdout: true
                     ).trim()
 
@@ -97,11 +98,11 @@ Resources:
           ContainerName: "webgoat"
           ContainerPort: 8080
 """
-                    writeFile file: 'appspec.yaml', text: appspec
-                }
+                writeFile file: 'appspec.yaml', text: appspec
             }
         }
-
+    }
+}
         stage('📦 Bundle for CodeDeploy') {
             steps {
                 sh 'zip -r $BUNDLE appspec.yaml Dockerfile taskdef.json'
