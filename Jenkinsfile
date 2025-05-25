@@ -108,8 +108,7 @@ Resources:
                 sh 'zip -r $BUNDLE appspec.yaml Dockerfile taskdef.json'
             }
         }
-
-       stage('🚀 Deploy via CodeDeploy') {
+stage('🚀 Deploy via CodeDeploy') {
     steps {
         script {
             withAWS(credentials: 'aws-credentials', region: "${REGION}") {
