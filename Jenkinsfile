@@ -131,7 +131,7 @@ Resources:
 
         stage('🛡️ DAST Scan - Nikto') {
             steps {
-                sshagent(['nikto-ec2-key']) {
+                sshagent(['nikto-private-key']) {
                     sh '''
                     echo "[+] Nikto 원격 스캔 시작"
                     ssh -o StrictHostKeyChecking=no ec2-user@<NIKTO_EC2_PUBLIC_IP> '
