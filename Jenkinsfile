@@ -36,6 +36,9 @@ pipeline {
             steps {
                 script {
                     sh '''
+                    echo "[+] 기존 컨테이너 제거 시도..."
+                    docker rm -f webgoat-test || true
+                    
                     echo "[+] 로컬 컨테이너 실행 중..."
                     docker run -d --name webgoat-test -p 8080:8080 $ECR_REPO:$IMAGE_TAG
                     sleep 10
