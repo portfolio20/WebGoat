@@ -40,11 +40,11 @@ pipeline {
                     docker rm -f webgoat-test || true
                     
                     echo "[+] 로컬 컨테이너 실행 중..."
-                    docker run -d --name webgoat-test -p 8080:8080 $ECR_REPO:$IMAGE_TAG
+                    docker run -d --name webgoat-test -p 18080:18080 $ECR_REPO:$IMAGE_TAG
                     sleep 10
 
                     echo "[+] Nikto 로컬 스캔 시작..."
-                    nikto -h http://localhost:8080 -output webgoat-nikto.html -Format html
+                    nikto -h http://localhost:18080 -output webgoat-nikto.html -Format html
 
                     echo "[+] 컨테이너 정리 중..."
                     docker rm -f webgoat-test || true
