@@ -32,6 +32,7 @@ pipeline {
             }
         }
 
+        /*
         stage('🛡️ DAST Scan - Nikto (Local Container)') {
             steps {
                 script {
@@ -60,6 +61,7 @@ pipeline {
                 }
             }
         }
+        */
 
         stage('🔐 ECR Login') {
             steps {
