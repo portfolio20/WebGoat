@@ -13,7 +13,7 @@ pipeline {
         BUNDLE = "webgoat-deploy-bundle.zip"
     }
 
-    stages {
+   /* stages {
         stage('📦 Checkout') {
             steps {
                 checkout scm
@@ -63,7 +63,7 @@ pipeline {
         }
         */
 
-        stage('🔐 ECR Login') {
+       /* stage('🔐 ECR Login') {
             steps {
                 withAWS(credentials: 'aws-credentials', region: "${REGION}") {
                     sh '''
@@ -168,5 +168,20 @@ Resources:
         failure {
             echo "❌ Build, scan, or deployment failed. Check logs!"
         }
+    }*/
+
+    stage('🧪 ECR 로그인 및 Pull 테스트') {
+    steps {
+        withAWS(credentials: 'aws-credentials', region: 'ap-northeast-2') {
+            sh '''
+            echo "[🔐] ECR 로그인 시도 중..."
+            aws ecr get-login-password | docker login --username AWS --password-stdin 669155637873.dkr.ecr.ap-northeast-2.amazonaws.com/jenkins-demo
+
+            echo "[📦] ECR 이미지 Pull 시도 중..."
+            docker pull 669155637873.dkr.ecr.ap-northeast-2.amazonaws.com/jenkins-demo:latest
+            '''
+        }
     }
+}
+
 }
