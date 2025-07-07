@@ -55,8 +55,8 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 sh '''
-                    docker tag $IMAGE_NAME:latest $ECR_URL/$IMAGE_NAME:latest
-                    docker push $ECR_URL/$IMAGE_NAME:latest
+                    docker tag $IMAGE_NAME:latest $ECR_URL:latest
+                    docker push $ECR_URL:latest
                 '''
             }
         }
