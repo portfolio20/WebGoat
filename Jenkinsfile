@@ -37,15 +37,12 @@ pipeline {
         stage('ECR Login') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                  [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-access-key-id']
                 ]) {
-                    sh '''
-                    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-                    export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                    aws ecr get-login-password --region $AWS_REGION | \
-                    docker login --username AWS --password-stdin $ECR_URL
-                    '''
+                  sh '''
+                    aws ecr get-login-password --region $REGION | \
+                    docker login --username AWS --password-stdin $ECR_REPO
+                  '''
                 }
             }
         }
