@@ -5,7 +5,7 @@ pipeline {
         AWS_REGION = 'ap-northeast-2'
         IMAGE_NAME = 'jenkins-demo'
         ACCOUNT_ID = '805369546017'
-        ECR_URL = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        ECR_URL = "805369546017.dkr.ecr.ap-northeast-2.amazonaws.com/webgoat-ecr"
     }
 
      tools {
