@@ -1,0 +1,6 @@
+[
+  {
+    "name": "webgoat-test",
+    "imageUri": "805369546017.dkr.ecr.ap-northeast-2.amazonaws.com/webgoat-ecr:latest"
+  }
+]
