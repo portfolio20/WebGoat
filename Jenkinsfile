@@ -8,7 +8,20 @@ pipeline {
         ECR_URL = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
     }
 
+     tools {
+    jdk 'jdk-23'
+    }
+    
     stages {
+        stage('DEBUG JAVA') {
+            steps {
+                sh '''
+                  echo "JAVA_HOME=$JAVA_HOME"
+                  java -version
+                  mvn -version
+                '''
+              }
+        }
         stage('Build JAR') {
             steps {
                 sh 'mvn clean package -DskipTests'
