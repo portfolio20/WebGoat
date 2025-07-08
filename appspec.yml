@@ -3,7 +3,7 @@ Resources:
   - TargetService:
       Type: AWS::ECS::Service
       Properties:
-        TaskDefinition: "webgoat-task"
+        TaskDefinition: "webgoat-task:1"
         LoadBalancerInfo:
           ContainerName: "webgoat"
           ContainerPort: 8080
