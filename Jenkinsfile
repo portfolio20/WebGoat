@@ -64,8 +64,11 @@ pipeline {
         stage('Upload to S3') {
             steps {
                 sh '''
-                    zip -r $BUNDLE appspec.yml imagedefinitions.json
-                    aws s3 cp $BUNDLE s3://$S3_BUCKET/
+                    cp appspec.yml /tmp/appspec.yml
+                    cp imagedefinitions.json /tmp/imagedefinitions.json
+                    cd /tmp
+                    zip $WORKSPACE/$BUNDLE appspec.yml imagedefinitions.json
+                    aws s3 cp $WORKSPACE/$BUNDLE s3://$S3_BUCKET/
                 '''
             }
         }
