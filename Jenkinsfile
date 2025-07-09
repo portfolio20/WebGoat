@@ -32,42 +32,11 @@ pipeline {
             }
         }
 
-        /*
-        stage('🛡️ DAST Scan - Nikto (Local Container)') {
-            steps {
-                script {
-                    sh '''
-                    echo "[+] 기존 컨테이너 제거 시도..."
-                    docker rm -f webgoat-test || true
-                    
-                    echo "[+] 로컬 컨테이너 실행 중..."
-                    docker run -d --name webgoat-test -p 18080:18080 $ECR_REPO:$IMAGE_TAG
-                    sleep 10
-
-                    echo "[+] Nikto 로컬 스캔 시작..."
-                    nikto -h http://localhost:18080 -output webgoat-nikto.html -Format html
-
-                    echo "[+] 컨테이너 정리 중..."
-                    docker rm -f webgoat-test || true
-
-                    echo "[+] S3에 리포트 업로드 중..."
-                    aws s3 cp webgoat-nikto.html s3://webgoat-dast-report-bucket/reports/webgoat-nikto-$(date +%Y%m%d-%H%M%S).html --region $REGION
-                    '''
-                }
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'webgoat-nikto.html', allowEmptyArchive: true
-                }
-            }
-        }
-        */
-
         stage('🔐 ECR Login') {
             steps {
                 withAWS(credentials: 'aws-credentials', region: "${REGION}") {
                     sh '''
-                    aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REPO
+                    aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REPO
                     '''
                 }
             }
@@ -159,29 +128,28 @@ Resources:
                 }
             }
         }
+
+        stage('🧪 ECR 로그인 및 Pull 테스트') {
+            steps {
+                withAWS(credentials: 'aws-credentials', region: "${REGION}") {
+                    sh '''
+                    echo "[🔐] ECR 로그인 시도 중..."
+                    aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REPO
+
+                    echo "[📦] ECR 이미지 Pull 시도 중..."
+                    docker pull $ECR_REPO:$IMAGE_TAG
+                    '''
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo "✅ Successfully built, scanned, pushed, and deployed!"
+            echo "✅ Successfully built, pushed, and deployed!"
         }
         failure {
-            echo "❌ Build, scan, or deployment failed. Check logs!"
-        }
-    }*/
-
-    stage('🧪 ECR 로그인 및 Pull 테스트') {
-    steps {
-        withAWS(credentials: 'aws-credentials', region: 'ap-northeast-2') {
-            sh '''
-            echo "[🔐] ECR 로그인 시도 중..."
-            aws ecr get-login-password | docker login --username AWS --password-stdin 669155637873.dkr.ecr.ap-northeast-2.amazonaws.com/jenkins-demo
-
-            echo "[📦] ECR 이미지 Pull 시도 중..."
-            docker pull 669155637873.dkr.ecr.ap-northeast-2.amazonaws.com/jenkins-demo:latest
-            '''
+            echo "❌ Build, push, or deployment failed. Check logs!"
         }
     }
-}
-
 }
