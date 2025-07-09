@@ -48,6 +48,22 @@ pipeline {
             }
         }
 
+        stage('🧪 Run ZAP Scan via SSH') {
+            steps {
+                sshagent(credentials: ['nikto-private-key']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ec2-user@<ZAP_IP> '
+                        aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REPO &&
+                        docker rm -f webgoat-test || true &&
+                        docker run -d --name webgoat-test -p 8080:8080 $ECR_REPO:$IMAGE_TAG &&
+                        /opt/zaproxy/scan.sh webgoat-test 8090 /start.mvc
+                    '
+                    """
+                }
+            }
+        }
+        
+
         stage('🧩 Generate taskdef.json') {
             steps {
                 script {
