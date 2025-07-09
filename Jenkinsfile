@@ -13,7 +13,7 @@ pipeline {
         BUNDLE = "webgoat-deploy-bundle.zip"
     }
 
-   /* stages {
+    stages {
         stage('📦 Checkout') {
             steps {
                 checkout scm
@@ -63,7 +63,7 @@ pipeline {
         }
         */
 
-       /* stage('🔐 ECR Login') {
+        stage('🔐 ECR Login') {
             steps {
                 withAWS(credentials: 'aws-credentials', region: "${REGION}") {
                     sh '''
