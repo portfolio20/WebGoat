@@ -48,11 +48,32 @@ pipeline {
             }
         }
 
+        // ✅ ZAP 프라이빗 IP 동적 조회
+        stage('📡 Get ZAP Private IP') {
+            steps {
+                withAWS(credentials: 'aws-credentials', region: "${REGION}") {
+                    script {
+                        env.ZAP_IP = sh(
+                            script: '''
+                                aws ec2 describe-instances \
+                                    --instance-ids i-025398cdce6342582 \
+                                    --query "Reservations[0].Instances[0].PrivateIpAddress" \
+                                    --output text
+                            ''',
+                            returnStdout: true
+                        ).trim()
+                        echo "📡 ZAP Private IP: ${env.ZAP_IP}"
+                    }
+                }
+            }
+        }
+
+        // ✅ ZAP 인스턴스에 SSH 접속하여 스캔 자동화
         stage('🧪 Run ZAP Scan via SSH') {
             steps {
                 sshagent(credentials: ['nikto-private-key']) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no ec2-user@<ZAP_IP> '
+                    ssh -o StrictHostKeyChecking=no ec2-user@$ZAP_IP '
                         aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REPO &&
                         docker rm -f webgoat-test || true &&
                         docker run -d --name webgoat-test -p 8080:8080 $ECR_REPO:$IMAGE_TAG &&
@@ -62,7 +83,6 @@ pipeline {
                 }
             }
         }
-        
 
         stage('🧩 Generate taskdef.json') {
             steps {
@@ -162,10 +182,10 @@ Resources:
 
     post {
         success {
-            echo "✅ Successfully built, pushed, and deployed!"
+            echo "✅ Successfully built, pushed, scanned, and deployed!"
         }
         failure {
-            echo "❌ Build, push, or deployment failed. Check logs!"
+            echo "❌ Build, scan, or deployment failed. Check logs!"
         }
     }
 }
